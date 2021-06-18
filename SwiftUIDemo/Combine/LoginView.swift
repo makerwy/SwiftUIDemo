@@ -29,7 +29,7 @@ struct LoginView: View {
                 
                 if viewModel.showPasswordError {
                     Text("密码不能少于6位！！！")
-                                        .foregroundColor(Color.red)
+                        .foregroundColor(Color.red)
                 }
                 
                 GeometryReader {proxy in

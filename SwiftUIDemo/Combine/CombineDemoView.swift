@@ -8,6 +8,11 @@
 import SwiftUI
 import Combine
 
+enum MyError: Error {
+    case unknow
+    case other
+}
+
 ///网络搜索
 struct CombineDemoView: View {
     
@@ -30,7 +35,8 @@ struct CombineDemoView: View {
                     TextField("请输入要搜索的repository", text: $viewModel.inputText)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                     Button("登录") {
-                        showLogin.toggle()
+//                        showLogin.toggle()
+                        createAnyPublisher()
                     }
                 }
                 .padding(.horizontal,15)
@@ -45,10 +51,36 @@ struct CombineDemoView: View {
         .sheet(isPresented: $showLogin, content: {
             LoginView()
         })
+        .onDisappear {
+            createAnyPublisher()
+        }
+    }
+    
+    func createAnyPublisher() {
+        let publisher = AnyPublisher<String, MyError>.create { subscriber in
+            // Values
+            subscriber.send("Hello")
+            subscriber.send("World!")
+
+            // Complete with error
+              subscriber.send(completion: .failure(MyError.other))
+
+            // Or, complete successfully
+            subscriber.send(completion: .finished)
+
+            return AnyCancellable {
+              // Perform cleanup
+            }
+          }
+        .sink { _ in
+            
+        } receiveValue: { value in
+            print(value)
+        }
+
     }
     
 }
-
 struct GithubListCell: View {
     let repository: GithubRepository
     
